@@ -1,1 +1,93 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cartoon Video Maker</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101426;color:white;font-family:Arial,sans-serif;padding:20px}
+header{text-align:center;padding:18px 5px}
+header h1{color:#a78bfa;font-size:27px}
+header p{color:#cbd5e1}
+.panel{background:#202943;padding:18px;border-radius:16px;margin:15px 0}
+label{display:block;margin:12px 0 7px}
+input,select,textarea{width:100%;padding:13px;border:1px solid #52617e;border-radius:9px;background:#111a2e;color:white;font-size:16px}
+textarea{min-height:100px}
+button{border:0;border-radius:10px;padding:13px 17px;font-size:15px;font-weight:bold;cursor:pointer}
+.primary{background:#8b5cf6;color:white;width:100%;margin-top:15px}
+.secondary{background:#334155;color:white;margin:5px}
+#story{white-space:pre-line;line-height:1.7;color:#e2e8f0}
+.scene{background:linear-gradient(135deg,#4338ca,#0f766e);padding:28px 10px;border-radius:14px;text-align:center;margin:10px 0}
+.emoji{font-size:65px}
+.scene p{font-size:17px}
+footer{text-align:center;color:#94a3b8;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>🎬 AI Cartoon Studio</h1>
+<p>Create fun English cartoon stories!</p>
+</header>
+<div class="panel">
+<h2>✨ Create Your Cartoon Story</h2>
+<label>Story topic</label>
+<input id="topic" placeholder="Example: A brave little rabbit">
+<label>Cartoon character</label>
+<select id="character">
+<option>🐰 A cute rabbit</option>
+<option>🦁 A brave lion</option>
+<option>🐼 A funny panda</option>
+<option>🐱 A little cat</option>
+<option>🐶 A clever dog</option>
+</select>
+<label>Story language</label>
+<select id="language"><option>English</option></select>
+<button class="primary" onclick="generate()">Generate Cartoon Story ✨</button>
+</div>
+<div class="panel">
+<h2>📖 Your Story</h2>
+<div id="story">Your cartoon story will appear here...</div>
+<button class="secondary" onclick="speak()">▶ Play Voice</button>
+<button class="secondary" onclick="stopVoice()">⏹ Stop</button>
+<button class="secondary" onclick="downloadStory()">⬇ Download Story</button>
+</div>
+<div class="panel">
+<h2>🎨 Cartoon Scenes</h2>
+<div id="scenes">Generate a story to see your scenes.</div>
+</div>
+<footer>Made with ❤️ | AI Cartoon Studio</footer>
+<script>
+let currentStory="";
+function generate(){
+let topic=document.getElementById('topic').value.trim()||"A magical adventure";
+let character=document.getElementById('character').value;
+currentStory="Once upon a time, "+topic+".\n\n"+character+" lived in a beautiful green forest. One sunny morning, a surprising adventure began.\n\nSuddenly, a little friend needed help. Our brave hero decided to be kind and never give up.\n\nAfter a wonderful adventure, everyone became happy. They learned that kindness and friendship are the greatest treasures.\n\nThe End!";
+document.getElementById('story').textContent=currentStory;
+let scenes=[
+["🌳","A beautiful forest","A new adventure begins."],
+["😮","A surprising discovery","Something unexpected happens."],
+["❤️","A brave decision","Our hero decides to help."],
+["🎉","A happy ending","Friendship saves the day."]
+];
+document.getElementById('scenes').innerHTML=scenes.map(s=>'<div class="scene"><div class="emoji">'+s[0]+'</div><h3>'+s[1]+'</h3><p>'+s[2]+'</p></div>').join('');
+}
+function speak(){
+if(!currentStory){alert("Please generate a story first.");return;}
+if(!('speechSynthesis' in window)){alert("Voice is not supported in this browser.");return;}
+speechSynthesis.cancel();
+let msg=new SpeechSynthesisUtterance(currentStory);
+msg.lang="en-US";msg.rate=0.9;
+speechSynthesis.speak(msg);
+}
+function stopVoice(){if('speechSynthesis' in window)speechSynthesis.cancel();}
+function downloadStory(){
+if(!currentStory){alert("Generate a story first.");return;}
+let file=new Blob([currentStory],{type:"text/plain"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(file);a.download="cartoon-story.txt";a.click();
+URL.revokeObjectURL(a.href);
+}
+</script>
+</body>
+</html>
